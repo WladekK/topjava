@@ -4,7 +4,6 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,12 +13,16 @@ public class InMemoryMealRepoImpl implements InMemoryMealRepo {
 
     @Override
     public void create(Meal meal) {
-        mealRepository.put(Meal.getId().get(), meal);
+        mealRepository.put(meal.getMealId(), meal);
     }
 
     @Override
     public void update(Long id, LocalDateTime dateTime, String description, int calories) {
-            mealRepository.put(id, new Meal(dateTime, description, calories));
+        Meal editedMeal = mealRepository.get(id);
+        editedMeal.setDateTime(dateTime);
+        editedMeal.setDescription(description);
+        editedMeal.setCalories(calories);
+            mealRepository.put(id, editedMeal);
     }
 
     @Override
@@ -31,8 +34,9 @@ public class InMemoryMealRepoImpl implements InMemoryMealRepo {
 
     @Override
     public Meal getMeal(Long id) {
-        Optional<Meal> meal = Optional.empty();
-        return mealRepository.getOrDefault(id, meal.get());
+//        Optional<Meal> meal = Optional.empty();
+//        return mealRepository.getOrDefault(id, meal.get());
+        return mealRepository.get(id);
     }
 
     @Override

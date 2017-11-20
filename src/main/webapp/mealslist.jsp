@@ -24,6 +24,6 @@
         </tr>
     </c:forEach>
 </table>
-<p><a href="${pageContext.request.contextPath}/mealServlet?action=create"></a></p>
+<p><a href="${pageContext.request.contextPath}/mealServlet?action=create">add a new meal</a></p>
 </body>
 </html>

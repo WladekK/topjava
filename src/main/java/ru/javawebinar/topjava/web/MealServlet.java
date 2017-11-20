@@ -38,36 +38,46 @@ public class MealServlet extends HttpServlet {
 //                LocalTime.of(12, 0), 2000);
 //        request.setAttribute("meals", mealsWithExceeded);
 //        request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        String forward;
+
+        String fwd;
         String action = request.getParameter("action");
         Map<Long, Meal> meals = mealRepo.getAllMeals();
         request.setAttribute("meals", meals.entrySet());
         if (action.equalsIgnoreCase("delete")) {
             long mealId = mealId(request);
             mealRepo.delete(mealId);
-            forward = MEALS_LIST;
+            fwd = MEALS_LIST;
             request.setAttribute("meals", mealRepo.getAllMeals().entrySet());
-
         } else if (action.equalsIgnoreCase("edit")) {
-            forward = CRUD;
+            fwd = CRUD;
             long mealId = mealId(request);
             Meal editedMeal = mealRepo.getMeal(mealId);
+            request.setAttribute("id", mealId);
             request.setAttribute("meal", editedMeal);
-        } else if (action.equalsIgnoreCase("all_users")) {
-            forward = MEALS_LIST;
+        } else if (action.equalsIgnoreCase("all_meals")) {
+            fwd = MEALS_LIST;
             request.setAttribute("meals", mealRepo.getAllMeals().entrySet());
-        } else forward = CRUD;
+        } else fwd = CRUD;
 
-        request.getRequestDispatcher(forward).forward(request, response);
+        request.getRequestDispatcher(fwd).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward using doPost");
+
         LocalDateTime ldt = LocalDateTime.parse(request.getParameter("date"));
         int calories = Integer.parseInt(request.getParameter("calories"));
-        Meal newMeal = new Meal(ldt, request.getParameter("description"), calories);
-        mealRepo.create(newMeal);
+
+        if (request.getParameter("id") == null || request.getParameter("id").equals("")) {
+            Meal newMeal = new Meal(ldt, request.getParameter("description"), calories);
+            mealRepo.create(newMeal);
+        } else {
+            long mealId = Long.parseLong(request.getParameter("id"));
+            mealRepo.update(mealId, ldt, request.getParameter("description"), calories);
+        }
+        request.setAttribute("meals", mealRepo.getAllMeals());
+        request.getRequestDispatcher(MEALS_LIST).forward(request, response);
     }
     private static Long mealId(HttpServletRequest request){
         if(request.getParameter("mealId") != null)
