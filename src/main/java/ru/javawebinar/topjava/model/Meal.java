@@ -3,8 +3,12 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Meal {
+
+    private static AtomicLong id;
+
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -35,5 +39,13 @@ public class Meal {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
+    }
+
+    public static AtomicLong getId() {
+        return id;
+    }
+
+    public static long setId() {
+        return id.incrementAndGet();
     }
 }
