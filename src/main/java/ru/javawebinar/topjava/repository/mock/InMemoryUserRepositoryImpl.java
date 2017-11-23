@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -54,10 +53,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        Optional<User> user = repository.values().stream().findAny();
-        if (!user.isPresent()){
-            throw new NotFoundException("user with such email is not found");
-        }
-        return user.get();
+        Optional<User> user = repository.values().stream().findFirst();
+        return user.orElse(null);
     }
 }

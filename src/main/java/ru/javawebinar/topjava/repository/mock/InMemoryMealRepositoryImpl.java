@@ -2,43 +2,52 @@ package ru.javawebinar.topjava.repository.mock;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class InMemoryMealRepositoryImpl implements MealRepository {
-    private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+
+    private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
-    {
-        MealsUtil.MEALS.forEach(this::save);
-    }
-
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(int userId, Meal meal) {
+        Map<Integer, Meal> userMeals = repository.get(userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
         }
-        repository.put(meal.getId(), meal);
+        userMeals.put(meal.getId(), meal);
+        repository.put(userId, userMeals);
         return meal;
     }
 
     @Override
-    public void delete(int id) {
-        repository.remove(id);
+    public boolean delete(int userId, int mealId) {
+        Map<Integer, Meal> userMeals = repository.get(userId);
+        if (userMeals.containsKey(mealId)) {
+            userMeals.remove(mealId);
+            repository.put(userId, userMeals);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int userId, int mealId) {
+        Map<Integer, Meal> userMeals = repository.get(userId);
+        return userMeals.get(mealId);
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+    public Collection<Meal> getAll(int userId) {
+        Collection<Meal>userMeals = repository.get(userId).values();
+        return userMeals.stream().sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
+
     }
 }
 
