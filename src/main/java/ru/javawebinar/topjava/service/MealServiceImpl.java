@@ -6,6 +6,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -45,6 +47,24 @@ public class MealServiceImpl implements MealService {
         List<Meal>userMeals = (List<Meal>) repository.getAll(userId);
         if (userMeals.isEmpty()){
             throw new NotFoundException("User with such id does not have meals yet");
+        }
+        return  userMeals;
+    }
+
+    @Override
+    public List<Meal> getAllByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        List<Meal>userMeals = (List<Meal>) repository.getFilteredByDate(userId, startDate, endDate);
+        if (userMeals.isEmpty()){
+            throw new NotFoundException("User with such id does not have meals between this period");
+        }
+        return  userMeals;
+    }
+
+    @Override
+    public List<Meal> getAllByTime(int userId, LocalTime startTime, LocalTime endTime) {
+        List<Meal>userMeals = (List<Meal>) repository.getFilteredByTime(userId, startTime, endTime);
+        if (userMeals.isEmpty()){
+            throw new NotFoundException("User with such id does not have meals between this period");
         }
         return  userMeals;
     }
