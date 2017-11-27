@@ -20,7 +20,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean delete(int id) {
-        log.info("delete {}", id);
+        log.info("delete User{}", id);
         if (repository.containsKey(id)){
             repository.remove(id);
             return true;
@@ -30,7 +30,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        log.info("save {}", user);
+        log.info("save User{}", user);
         if (user.isNew()){
             user.setId(counter.incrementAndGet());
         }
@@ -40,7 +40,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public User get(int id) {
-        log.info("get {}", id);
+        log.info("get User{}", id);
         return repository.get(id);
     }
 
@@ -53,7 +53,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        Optional<User> user = repository.values().stream().findFirst();
+        Optional<User> user = repository.values().stream().filter(u -> u.getEmail().equals(email)).findFirst();
         return user.orElse(null);
     }
 }

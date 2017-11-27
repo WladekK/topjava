@@ -15,10 +15,15 @@ public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("forward to users");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("forward to meals");
         AuthorizedUser.setId(Integer.parseInt(request.getParameter("userId")));
         request.setAttribute("user", AuthorizedUser.id());
-        request.getRequestDispatcher("/users.jsp").forward(request, response);
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+    }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("sendRedirect to users");
+        response.sendRedirect("users.jsp");
     }
 }

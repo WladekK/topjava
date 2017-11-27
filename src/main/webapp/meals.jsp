@@ -20,7 +20,7 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>
-    <form method="get" action="meals" id="filter">
+    <form method="post" action="meals?action=filter">
         <dl>
             <dt>from date</dt>
             <dd><input type="date" name="startDate"></dd>
@@ -38,7 +38,7 @@
             <dt>to time</dt>
             <dd><input type="time" name="endTime"></dd>
         </dl>
-        <a href="meals?action=filter">Filter</a>
+        <button type="submit">Filter</button>
     </form>
     <hr>
     <a href="meals?action=create">Add Meal</a>

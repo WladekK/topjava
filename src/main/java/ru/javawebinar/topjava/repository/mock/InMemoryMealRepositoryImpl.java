@@ -33,7 +33,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
-        log.info("save {}", meal);
+        log.info("save Meal{} for User{}", meal, userId);
         Map<Integer, Meal> userMeals;
         if (repository.containsKey(userId)) {
             userMeals = repository.get(userId);
@@ -49,11 +49,10 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int userId, int mealId) {
-        log.info("delete {}", mealId);
+        log.info("delete Meal{} for User{}", mealId, userId);
         Map<Integer, Meal> userMeals = repository.get(userId);
         if (userMeals.containsKey(mealId)) {
             userMeals.remove(mealId);
-            repository.put(userId, userMeals);
             return true;
         }
         return false;
@@ -61,14 +60,14 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int userId, int mealId) {
-        log.info("get {}", mealId);
+        log.info("get Meal{} for User{}", mealId, userId);
         Map<Integer, Meal> userMeals = repository.get(userId);
         return userMeals.get(mealId);
     }
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        log.info("getAll");
+        log.info("getAll for User{}", userId);
         Collection<Meal>userMeals = repository.get(userId).values();
         return userMeals.stream().sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
 
@@ -76,7 +75,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
-        log.info("getFilteredByDate");
+        log.info("getFilteredByDate for User{}", userId);
         Collection<Meal>userMeals = repository.get(userId).values();
         return userMeals.stream().filter(meal -> isBetweenDate(meal.getDate(), startDate, endDate))
                 .collect(Collectors.toList());
@@ -84,7 +83,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getFilteredByTime(int userId, LocalTime startTime, LocalTime endTime) {
-        log.info("getFilteredByTime");
+        log.info("getFilteredByTime for User{}", userId);
         Collection<Meal>userMeals = repository.get(userId).values();
         return userMeals.stream().filter(meal -> isBetween(meal.getTime(), startTime, endTime))
                 .collect(Collectors.toList());
