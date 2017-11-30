@@ -13,4 +13,6 @@ INSERT INTO user_roles (role, user_id) VALUES
 
 insert into meals (user_id, date_time, description, calories) values
   (100001, '19.12.1979', 'admin`s meal', 1000),
-  (100000, '05.10.1981', 'user`s meal', 1500);
+  (100001, '20.12.1979', 'admin`s second meal', 1200),
+  (100000, '6.10.1981', 'user`s meal', 1500),
+  (100000, '5.10.1981', 'user`s second meal', 1700);
