@@ -16,3 +16,4 @@ insert into meals (user_id, date_time, description, calories) values
   (100001, '20.12.1979', 'admin`s second meal', 1200),
   (100000, '6.10.1981', 'user`s meal', 1500),
   (100000, '5.10.1981', 'user`s second meal', 1700);
+
