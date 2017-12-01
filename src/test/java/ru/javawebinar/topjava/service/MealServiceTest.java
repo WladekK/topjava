@@ -93,7 +93,6 @@ public class MealServiceTest {
         Meal updating = new Meal(mealService.get(USER_MEAL_ID_2, USER_ID));
         updating.setCalories(200);
         updating.setDescription("some update");
-        //updating.setId(USER_MEAL_ID_2);
         mealService.update(updating, ADMIN_ID);
     }
 }
