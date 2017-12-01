@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,8 +43,11 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal update(Meal meal, int userId) {
+        Meal checked = repository.get(meal.getId(), userId);
+        if (checked == null) throw new NotFoundException("Meal does not belongs to user");// if meal not belongs to user this line will cause of NotFound exception
         return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
+
 
     @Override
     public Meal create(Meal meal, int userId) {

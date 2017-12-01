@@ -78,4 +78,22 @@ public class MealServiceTest {
         assertMatch(created, newMeal);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void getNotBelongs() throws Exception {
+        mealService.get(ADMIN_MEAL_ID_2, USER_ID);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deleteNotBelongs() throws Exception {
+        mealService.delete(USER_MEAL_ID_2, ADMIN_ID);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void updateNotBelongs(){
+        Meal updating = new Meal(mealService.get(USER_MEAL_ID_2, USER_ID));
+        updating.setCalories(200);
+        updating.setDescription("some update");
+        //updating.setId(USER_MEAL_ID_2);
+        mealService.update(updating, ADMIN_ID);
+    }
 }
