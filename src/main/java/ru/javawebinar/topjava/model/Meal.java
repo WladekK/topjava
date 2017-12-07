@@ -6,10 +6,18 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
+@NamedQueries(value = {
+        @NamedQuery(name = Meal.DELETE, query = "DELETE from Meal m where m.user.id=:userId and m.id=:id"), //"DELETE from Meal m where m.id=:id and m.user.id=:userId"
+        @NamedQuery(name = Meal.ALL_SORTED, query = "select m from Meal m where m.user.id=:userId order by m.dateTime desc"),
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "select m from Meal m where m.user.id=:userId and m.dateTime between :startDate and :endDate order by m.dateTime desc")
+})
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = "date_time", name = "meals_date_time_uindex")})
 public class Meal extends AbstractBaseEntity {
+
+    public static final String DELETE = "Meal.delete";
+    public static final String ALL_SORTED = "Meal.getAllSorted";
+    public static final String GET_BETWEEN = "Meal.getBetween";
 
     @Column(name = "date_time", nullable = false, unique = true)
     @NotNull
@@ -24,6 +32,7 @@ public class Meal extends AbstractBaseEntity {
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Meal() {
@@ -84,6 +93,7 @@ public class Meal extends AbstractBaseEntity {
     public String toString() {
         return "Meal{" +
                 "id=" + id +
+                //", userId=" + user.getId() +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
