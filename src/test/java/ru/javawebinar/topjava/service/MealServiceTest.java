@@ -1,7 +1,14 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,12 +33,39 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     static {
         SLF4JBridgeHandler.install();
     }
 
     @Autowired
     private MealService service;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    private static long startTime;
+    private static long finishTime;
+
+    @Rule
+    public final TestWatcher watcher = new TestWatcher() {
+        @Override
+        public Statement apply(Statement base, Description description) {
+            return super.apply(base, description);
+        }
+
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+        }
+
+        @Override
+        protected void finished(Description description) {
+            finishTime = System.currentTimeMillis();
+            log.info((description.getDisplayName() + " completed in millis: " + (finishTime - startTime)));
+            //System.out.println(description.getDisplayName() + " completed in millis: " + (finishTime - startTime));
+        }
+    };
 
     @Test
     public void testDelete() throws Exception {
@@ -57,8 +91,9 @@ public class MealServiceTest {
         assertMatch(actual, ADMIN_MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test//(expected = NotFoundException.class)
     public void testGetNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
